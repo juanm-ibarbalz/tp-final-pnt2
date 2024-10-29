@@ -5,6 +5,8 @@ import {
   notifyApiGateway,
 } from "../services/uploadService.js";
 
+import { getAllFacturas } from "../services/facturaService.js";
+
 const router = express.Router();
 
 // Configuración de multer
@@ -28,7 +30,6 @@ router.post("/upload", upload.single("image"), async (req, res) => {
 });
 
 router.post("/extract", async (req, res) => {
-  console.log(req.body);
   const { bucket, key, id_usuario } = req.body;
 
   if (!bucket || !key) {
@@ -45,6 +46,28 @@ router.post("/extract", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+router.get("/facturas", async (req, res) => {
+  try {
+    const facturas = await getAllFacturas();
+    res.json(facturas);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// router.get("/factura/:uuid", async (req, res) => {
+//   const { uuid } = req.params;
+
+//   try {
+//     const factura = await getFacturaByUUID(uuid);
+//     res.json(factura);
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 router.post("/register", async (req, res) => {});
 

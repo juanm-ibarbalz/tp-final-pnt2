@@ -24,8 +24,8 @@ router.post("/upload", auth, upload.single("image"), async (req, res) => {
   }
 
   try {
-    const s3Data = await uploadImageToS3(file); // Subir imagen a S3
-    res.json({ bucket: s3Data.bucket, key: s3Data.key }); // Respuesta final
+    const s3Data = await uploadImageToS3(file);
+    res.json({ bucket: s3Data.bucket, key: s3Data.key });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: error.message });
@@ -33,7 +33,7 @@ router.post("/upload", auth, upload.single("image"), async (req, res) => {
 });
 
 router.post("/extract", auth, async (req, res) => {
-  const { bucket, key, id_usuario } = req.body;
+  const { bucket, key } = req.body;
 
   if (!bucket || !key) {
     return res
@@ -42,8 +42,8 @@ router.post("/extract", auth, async (req, res) => {
   }
 
   try {
-    const apiResponse = await notifyApiGateway({ bucket, key }, id_usuario);
-    res.json(apiResponse);
+    const apiResponse = await notifyApiGateway({ bucket, key }, req.userId); // Estoy devolviendo el userId desde la autenticacion, y no desde el body, es buena practica?
+    res.json(apiResponse); // Deberia en realidad ya mandarlo desde el upload y no desde acá? asi no cualquiera sube una factura al s3
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: error.message });

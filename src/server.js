@@ -10,11 +10,9 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-// Rutas
 app.use("/api/facturas", routesFacturas);
 app.use("/api/usuarios", routesUsuarios);
 
-// Iniciar el servidor
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Servidor Express iniciado en http://localhost:${PORT}`);

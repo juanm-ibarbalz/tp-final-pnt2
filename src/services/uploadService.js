@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const uploadImageToS3 = async (file) => {
   const s3Bucket = process.env.AWS_S3_BUCKET;
-  const s3Key = `facturas/${file.originalname}`; // Generamos la key con la estructura deseada
+  const s3Key = `facturas/${file.originalname}`;
 
   const s3Params = {
     Bucket: s3Bucket,
@@ -14,7 +14,6 @@ export const uploadImageToS3 = async (file) => {
 
   try {
     const s3Data = await s3.upload(s3Params).promise();
-    // En lugar de devolver solo la URL, ahora devolvemos el bucket y key
     return {
       bucket: s3Bucket,
       key: s3Key,
@@ -33,7 +32,7 @@ export const notifyApiGateway = async ({ bucket, key }, id_usuario) => {
       },
       id_usuario: id_usuario,
     });
-    return apiResponse.data; // Devuelve la respuesta de la API Gateway
+    return apiResponse.data;
   } catch (error) {
     throw new Error(`Error notificando a la API Gateway: ${error.message}`);
   }

@@ -1,19 +1,18 @@
 import express from "express";
 import cors from "cors";
-import routes from "./routes/routes.js";
+import routesFacturas from "./routes/routesFacturas.js";
+import routesUsuarios from "./routes/routesUsuarios.js";
 import dotenv from "dotenv";
 
 const app = express();
 dotenv.config();
 
-// Configuración de CORS
 app.use(cors());
-
-// Middleware para interpretar JSON en el cuerpo de las solicitudes
 app.use(express.json());
 
 // Rutas
-app.use("/api", routes);
+app.use("/api/facturas", routesFacturas);
+app.use("/api/usuarios", routesUsuarios);
 
 // Iniciar el servidor
 const PORT = process.env.PORT;

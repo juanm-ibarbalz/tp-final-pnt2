@@ -4,6 +4,7 @@ import { auth } from "../middleware/auth.js";
 import {
   uploadImageToS3,
   notifyApiGateway,
+  invocarLambda
 } from "../services/uploadService.js";
 import {
   getFacturasByUserId,
@@ -42,8 +43,17 @@ router.post("/extract", auth, async (req, res) => {
   }
 
   try {
-    const apiResponse = await notifyApiGateway({ bucket, key }, req.userId); // Estoy devolviendo el userId desde la autenticacion, y no desde el body, es buena practica?
-    res.json(apiResponse); // Deberia en realidad ya mandarlo desde el upload y no desde acá? asi no cualquiera sube una factura al s3
+    payload = {
+      s3:{
+        bucket: bucket,
+        key: key
+      },
+      id_usuario: req.userId
+    };
+    // const apiResponse = await notifyApiGateway({ bucket, key }, req.userId); // Estoy devolviendo el userId desde la autenticacion, y no desde el body, es buena practica?
+    const lambdaResponse = await invocarLambda(payload); // Estoy devolviendo el userId desde la autenticacion, y no desde el body, es buena practica?
+    // res.json(apiResponse); // Deberia en realidad ya mandarlo desde el upload y no desde acá? asi no cualquiera sube una factura al s3
+    res.json(lambdaResponse);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: error.message });

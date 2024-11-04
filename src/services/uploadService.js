@@ -38,4 +38,21 @@ export const notifyApiGateway = async ({ bucket, key }, id_usuario) => {
   }
 };
 
-export default { uploadImageToS3, notifyApiGateway };
+export const invocarLambda = async (payload) => {
+  const params = {
+    FunctionName: process.env.LAMBDA_NAME,
+    InvocationType: 'RequestResponse', // 'Event' para invocación asíncrona
+    Payload: JSON.stringify(payload),
+  };
+
+  try {
+    const response = await lambda.invoke(params).promise();
+    const result = JSON.parse(response.Payload);
+    return result;
+  } catch (error) {
+    console.error('Error al invocar la función Lambda:', error);
+    throw error;
+  }
+};
+
+export default { uploadImageToS3, notifyApiGateway, invocarLambda};
